@@ -25,7 +25,7 @@ func TestServer_postSlotSpins(t *testing.T) {
 		inputBody      string
 	}{
 
-		{"OK", 200, "{\"Total\":100,\"Spins\":[{\"Total\":100,\"Type\":\"main\",\"Stops\":[0,1,2,3,4]}],\"JWT\":\"signed\"}\n",
+		{"OK", 200, "{\"Total\":100,\"Spins\":[{\"Total\":100,\"Type\":\"main\",\"Stops\":[\"Ham\",\"Cheese\",\"Mayonnaise\",\"BuffaloWings\",\"Steak\"]}],\"JWT\":\"signed\"}\n",
 			"test",
 			"POST",
 			"127.0.0.1/api/machines/test/spins",
@@ -75,6 +75,6 @@ func (m *mockAccount) SignInfo(i *account.Info) (string, error) {
 
 type mockSlot struct{}
 
-func (m *mockSlot) Spin(int) (int, bool, [5]uint8) {
-	return 100, false, [5]uint8{0, 1, 2, 3, 4}
+func (m *mockSlot) Spin(int) (int, bool, [5]string) {
+	return 100, false, [5]string{"Ham", "Cheese", "Mayonnaise", "BuffaloWings", "Steak"}
 }

@@ -6,25 +6,25 @@ func (s *AtkinsDiet) bonus(d screen, pl payLine) int {
 	var (
 		elCount int
 		cell    = d[0][pl[1]]
-		onWild  = cell == s.wild
+		onWild  = cell == wild
 	)
 	for i := 1; i < 5; i++ {
 		col := i
 		line := pl[i]
-		if onWild && d[col][line] != s.wild {
+		if onWild && d[col][line] != wild {
 			onWild = false
 			cell = d[col][line]
 			elCount++
 			continue
 		}
-		if cell != d[col][line] && s.wild != d[col][line] {
+		if cell != d[col][line] && wild != d[col][line] {
 			break
 		}
 		elCount++
 	}
 	if elCount <= 1 {
 		elCount = s.scatterCount(d, pl) - 1
-		cell = s.scatter
+		cell = scatter
 	}
 	if elCount < 1 {
 		return 0
@@ -43,18 +43,18 @@ func (s *AtkinsDiet) scatterCount(d screen, pl payLine) int {
 	for i := 0; i < 5; i++ {
 		switch {
 		case i == 4:
-			if d[i][pl[i]] == s.scatter {
+			if d[i][pl[i]] == scatter {
 				scCurrent++
 			}
 			if scCurrent > scLongest {
 				scLongest = scCurrent
 			}
-		case d[i][pl[i]] != s.scatter && scCurrent != 0:
+		case d[i][pl[i]] != scatter && scCurrent != 0:
 			if scCurrent > scLongest {
 				scLongest = scCurrent
 			}
 			scCurrent = 0
-		case d[i][pl[i]] == s.scatter:
+		case d[i][pl[i]] == scatter:
 			scCurrent++
 		}
 	}

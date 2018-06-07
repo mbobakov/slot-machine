@@ -8,10 +8,8 @@ import (
 
 // AtkinsDiet slot machine
 type AtkinsDiet struct {
-	reelSize,
-	wild,
-	scatter uint8
 	paylines []payLine
+	strips   strips
 
 	mu          sync.RWMutex
 	coefficient coefficient
@@ -22,11 +20,9 @@ type AtkinsDiet struct {
 func NewAtkinsDiet() *AtkinsDiet {
 	return &AtkinsDiet{
 		random:      rand.New(rand.NewSource(time.Now().Unix())),
-		reelSize:    32,
-		wild:        0,
-		scatter:     15,
 		coefficient: defAtkinsDietCoefficients(),
 		paylines:    defAtkinsDietPayLines(),
+		strips:      defAtkinsDietReelStrip(),
 	}
 }
 
@@ -35,22 +31,24 @@ func (s *AtkinsDiet) screen() screen {
 	for i := 0; i < 5; i++ {
 		// sTops
 		s.mu.Lock() // cause random is not thread safe
-		scr[i][0] = uint8(s.random.Intn(int(s.reelSize)))
+		stopIdx := s.random.Intn(int(31))
 		s.mu.Unlock()
+
 		// midlle and bottom
-		for j := 1; j < 3; j++ {
-			if scr[i][j-1] == s.reelSize-1 {
-				scr[i][j] = 0
+		for j := 0; j < 3; j++ {
+			scr[i][j] = s.strips[i][stopIdx]
+			if stopIdx == 31 {
+				stopIdx = 0
 				continue
 			}
-			scr[i][j] = scr[i][j-1] + 1
+			stopIdx++
 		}
 	}
 	return scr
 }
 
 // Spin the Simple slot machine. Return bonus,free spins and STops
-func (s *AtkinsDiet) Spin(multypl int) (int, bool, [5]uint8) {
+func (s *AtkinsDiet) Spin(multypl int) (int, bool, [5]string) {
 	var (
 		freeSpin bool
 		bonus    int
@@ -63,5 +61,5 @@ func (s *AtkinsDiet) Spin(multypl int) (int, bool, [5]uint8) {
 		}
 		bonus += s.bonus(src, p)
 	}
-	return bonus, freeSpin, [5]uint8{src[0][0], src[1][0], src[2][0], src[3][0], src[4][0]}
+	return bonus, freeSpin, [5]string{src[0][0], src[1][0], src[2][0], src[3][0], src[4][0]}
 }

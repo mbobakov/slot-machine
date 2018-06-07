@@ -15,7 +15,7 @@ import (
 )
 
 type spinner interface {
-	Spin(int) (int, bool, [5]uint8)
+	Spin(int) (int, bool, [5]string)
 }
 type accountRepo interface {
 	InfoFromContext(ctx context.Context) (*account.Info, error)

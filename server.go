@@ -22,11 +22,10 @@ type resp struct {
 type spinResult struct {
 	Total int
 	Type  string
-	Stops [5]uint8
+	Stops [5]string
 }
 
 func (s *Server) postSlotSpins(w http.ResponseWriter, r *http.Request) {
-
 	slotID := chi.URLParam(r, "slotID")
 	if slotID == "" {
 		w.WriteHeader(http.StatusInternalServerError)
