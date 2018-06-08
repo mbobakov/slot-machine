@@ -75,6 +75,6 @@ func (m *mockAccount) SignInfo(i *account.Info) (string, error) {
 
 type mockSlot struct{}
 
-func (m *mockSlot) Spin(int) (int, bool, [5]string) {
+func (m *mockSlot) Spin(string, int) (int, bool, [5]string) {
 	return 100, false, [5]string{"Ham", "Cheese", "Mayonnaise", "BuffaloWings", "Steak"}
 }

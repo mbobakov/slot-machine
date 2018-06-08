@@ -26,6 +26,6 @@ func TestSimple_screen(t *testing.T) {
 func BenchmarkSimple_Spin(b *testing.B) {
 	s := AtkinsDiet{random: rand.New(rand.NewSource(time.Now().Unix()))}
 	for i := 0; i < b.N; i++ {
-		s.Spin(1)
+		s.Spin("", 1)
 	}
 }

@@ -57,13 +57,13 @@ func (s *Server) postSlotSpins(w http.ResponseWriter, r *http.Request) {
 		total int
 		ss    []spinResult
 	)
-	bonus, freeSpin, stops := slot.Spin(1)
+	bonus, freeSpin, stops := slot.Spin(middleware.GetReqID(r.Context()), 1)
 	total += bonus
 	ss = append(ss, spinResult{Stops: stops, Total: bonus, Type: "main"})
 	for freeSpin {
 		freeSpin = false
 		for i := 0; i < 10; i++ {
-			b, f, st := slot.Spin(3)
+			b, f, st := slot.Spin(middleware.GetReqID(r.Context()), 3)
 			total += b
 			ss = append(ss, spinResult{Stops: st, Total: b, Type: "free spin"})
 			if f {
