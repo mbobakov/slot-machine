@@ -8,17 +8,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSimple_screen(t *testing.T) {
+func TestSimple_screenFromStops(t *testing.T) {
 	tests := []struct {
 		name   string
+		input  stops
 		expect screen
 	}{
-		{"simple", screen{{"Eggs", "Mayonnaise", "Steak"}, {"Eggs", "Cheese", "Bacon"}, {"Sausage", "Bacon", "Steak"}, {"Mayonnaise", "Bacon", "Ham"}, {"Butter", "Steak", "Mayonnaise"}}},
+		{"simple", stops{1, 2, 3, 4, 5}, screen{{"Mayonnaise", "Ham", "Sausage"}, {"Steak", "Sausage", "Cheese"}, {"Scale", "Cheese", "Mayonnaise"}, {"Butter", "Bacon", "Cheese"}, {"Sausage", "Butter", "Bacon"}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := AtkinsDiet{random: rand.New(rand.NewSource(0)), strips: defAtkinsDietReelStrip()}
-			assert.Equal(t, tt.expect, s.screen())
+			assert.Equal(t, tt.expect, s.screenFromStops(tt.input))
 		})
 	}
 }
