@@ -12,10 +12,11 @@ import (
 	"github.com/jessevdk/go-flags"
 	"github.com/mbobakov/slot-machine/account"
 	"github.com/mbobakov/slot-machine/slot"
+	"github.com/sirupsen/logrus"
 )
 
 type spinner interface {
-	Spin(int) (int, bool, [5]uint8)
+	Spin(string, int) (int, bool, [5]int)
 }
 type accountRepo interface {
 	InfoFromContext(ctx context.Context) (*account.Info, error)
@@ -39,15 +40,20 @@ func main() {
 		os.Exit(1)
 	}
 	acc := &account.Repo{SigningKey: []byte(opts.Key)}
+	logger := logrus.New()
+	if opts.Verbose {
+		logger.SetLevel(logrus.DebugLevel)
+	}
 	srv := &Server{
 		Account: acc,
-		Slots:   map[string]spinner{"atkins-diet": slot.NewAtkinsDiet()},
+		Slots:   map[string]spinner{"atkins-diet": slot.NewAtkinsDiet(logger)},
 	}
 
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
+	reqLogger := &rlog{logger}
 	if opts.Verbose {
-		r.Use(middleware.Logger)
+		r.Use(middleware.RequestLogger(reqLogger))
 	}
 	r.Use(middleware.RequestID)
 	// Spin the slot-machine

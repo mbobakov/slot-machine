@@ -8,25 +8,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSimple_screen(t *testing.T) {
+func TestSimple_screenFromStops(t *testing.T) {
 	tests := []struct {
-		name     string
-		reelSize uint8
-		expect   screen
+		name   string
+		input  stops
+		expect screen
 	}{
-		{"simple", 5, screen{{4, 0, 1}, {4, 0, 1}, {3, 4, 0}, {1, 2, 3}, {0, 1, 2}}},
+		{"simple", stops{1, 2, 3, 4, 5}, screen{{"Mayonnaise", "Ham", "Sausage"}, {"Steak", "Sausage", "Cheese"}, {"Scale", "Cheese", "Mayonnaise"}, {"Butter", "Bacon", "Cheese"}, {"Sausage", "Butter", "Bacon"}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := AtkinsDiet{random: rand.New(rand.NewSource(0)), reelSize: tt.reelSize}
-			assert.Equal(t, tt.expect, s.screen())
+			s := AtkinsDiet{random: rand.New(rand.NewSource(0)), strips: defAtkinsDietReelStrip()}
+			assert.Equal(t, tt.expect, s.screenFromStops(tt.input))
 		})
 	}
 }
 
 func BenchmarkSimple_Spin(b *testing.B) {
-	s := AtkinsDiet{reelSize: 32, scatter: 3, random: rand.New(rand.NewSource(time.Now().Unix())), wild: 0}
+	s := AtkinsDiet{random: rand.New(rand.NewSource(time.Now().Unix()))}
 	for i := 0; i < b.N; i++ {
-		s.Spin(1)
+		s.Spin("", 1)
 	}
 }
